@@ -2,3 +2,6 @@
 *.sln
 *.suo
 *.vc*
+
+Debug
+Release
