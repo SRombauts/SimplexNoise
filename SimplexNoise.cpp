@@ -31,7 +31,7 @@
 /**
  * This method is faster than using (int32_t)std::floor(fp).
  *
- * I measured it to be approximatly twice as fast:
+ * I measured it to be approximately twice as fast:
  *  float:  ~18.4ns instead of ~39.6ns on an AMD APU),
  *  double: ~20.6ns instead of ~36.6ns on an AMD APU),
  * Reference: http://www.codeproject.com/Tips/700780/Fast-floor-ceiling-functions
@@ -64,6 +64,7 @@ static inline int32_t fastfloor(const double fp)
  * A vector-valued noise over 3D accesses it 96 times, and a
  * float-valued 4D noise 64 times. We want this to fit in the cache!
  */
+// TODO SRombauts => wrap back to 256 with casting? Less efficient?
 static const uint8_t perm[512] =
 {
     151, 160, 137, 91, 90, 15,
@@ -94,6 +95,14 @@ static const uint8_t perm[512] =
     138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180
 };
 
+/**
+ * Helper function to hash an integer using the above permutation table
+ */
+// TODO SRombauts => try xxHash for a better hashing function
+static inline uint8_t hash(uint8_t i)
+{
+    return perm[i];
+}
 
 /**
  * Helper functions to compute gradients-dot-residualvectors (1D to 4D)
@@ -107,9 +116,9 @@ static const uint8_t perm[512] =
 float grad(int32_t hash, float x)
 {
     int32_t h = hash & 15;
-    float grad = 1.0f + (h & 7);	// Gradient value 1.0, 2.0, ..., 8.0
-    if ((h & 8) != 0) grad = -grad;	// Set a random sign for the gradient
-    return (grad * x);				// Multiply the gradient with the distance
+    float grad = 1.0f + (h & 7);    // Gradient value 1.0, 2.0, ..., 8.0
+    if ((h & 8) != 0) grad = -grad; // Set a random sign for the gradient
+    return (grad * x);              // Multiply the gradient with the distance
 }
 
 
@@ -122,22 +131,29 @@ float grad(int32_t hash, float x)
  */
 float SimplexNoise::noise(float x)
 {
+    float n0, n1; // Noise contributions from the two "corners"
+
+    // No need to skew the input space in 1D
+
+    // Corners coordinates (nearest integer values):
     int32_t i0 = fastfloor(x);
     int32_t i1 = i0 + 1;
+    // Distances to corners (between 0 and 1):
     float x0 = x - i0;
     float x1 = x0 - 1.0f;
 
-    float n0, n1;
-
+    // Calculate the contribution from the first corner
     float t0 = 1.0f - x0*x0;
-//  if(t0 < 0.0f) t0 = 0.0f;
-	t0 *= t0;
-    n0 = t0 * t0 * grad(perm[i0 & 0xff], x0);
+//  if(t0 < 0.0f) t0 = 0.0f; // not possible
+    t0 *= t0;
+    n0 = t0 * t0 * grad(hash(i0), x0);
 
+    // Calculate the contribution from the second corner
     float t1 = 1.0f - x1*x1;
-//  if(t1 < 0.0f) t1 = 0.0f;
-	t1 *= t1;
-    n1 = t1 * t1 * grad(perm[i1 & 0xff], x1);
+//  if(t1 < 0.0f) t1 = 0.0f; // not possible
+    t1 *= t1;
+    n1 = t1 * t1 * grad(hash(i1), x1);
+
     // The maximum value of this noise is 8*(3/4)^4 = 2.53125
     // A factor of 0.395 scales to fit exactly within [-1,1]
     return 0.395f * (n0 + n1);
