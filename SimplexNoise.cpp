@@ -26,8 +26,6 @@
 
 #include "SimplexNoise.h"
 
-#include <limits>
-
 /**
  * This method is faster than using (int32_t)std::floor(fp).
  *
@@ -50,6 +48,11 @@ static inline int32_t fastfloor(const double fp)
 /**
  * Permutation table. This is just a random jumble of all numbers 0-255,
  * repeated twice to avoid wrapping the index at 255 for each lookup.
+ *
+ * This produce a repeatable pattern of 256, but Ken Perlin stated
+ * that it is not a problem for graphic texture as the noise features disappear
+ * at a distance far enough to be able to see a repeatable pattern of 256.
+ *
  * This needs to be exactly the same for all instances on all platforms,
  * so it's easiest to just keep it as static explicit data.
  * This also removes the need for any initialisation of this class.
@@ -64,7 +67,6 @@ static inline int32_t fastfloor(const double fp)
  * A vector-valued noise over 3D accesses it 96 times, and a
  * float-valued 4D noise 64 times. We want this to fit in the cache!
  */
-// TODO SRombauts => wrap back to 256 with casting? Less efficient?
 static const uint8_t perm[512] =
 {
     151, 160, 137, 91, 90, 15,
@@ -97,15 +99,37 @@ static const uint8_t perm[512] =
 
 /**
  * Helper function to hash an integer using the above permutation table
+ *
+ *  This inline function costs around 1ns, and is called N+1 times for a noise of N dimension.
+ *
+ *  Using a real hash function would be better to improve the "repeatability of 256" of the above permutation table,
+ * but the Thomas Wang integer Hash function get down to 3.5 times more (which add 30% to a 1D noise)
  */
-// TODO SRombauts => try xxHash for a better hashing function
 static inline uint8_t hash(uint8_t i)
 {
     return perm[i];
 }
 
 /**
- * Helper functions to compute gradients-dot-residualvectors (1D to 4D)
+ * @brief Original 32 bits Thomas Wang's integer hash (32 bits Mix) function
+ *
+ * @see http://burtleburtle.net/bob/hash/integer.html
+ *
+ * @note : not used, see above
+static inline uint32_t mix(uint32_t a)
+{
+    a += ~(a << 15);
+    a ^=  (a >> 10);
+    a +=  (a << 3);
+    a ^=  (a >> 6);
+    a += ~(a << 11);
+    a ^=  (a >> 16);
+    return a;
+}
+*/
+
+/**
+ * Helper functions to compute gradients-dot-residual vectors (1D to 4D)
  * Note that these generate gradients of more than unit length. To make
  * a close match with the value range of classic Perlin noise, the final
  * noise values need to be rescaled to fit nicely within [-1,1].
