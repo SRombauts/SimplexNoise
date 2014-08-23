@@ -18,4 +18,6 @@ class SimplexNoise
 public:
     // 1D Perlin simplex noise
     static float noise(float x);
+    // 2D Perlin simplex noise
+    static float noise(float x, float y);
 };
