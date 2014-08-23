@@ -16,6 +16,6 @@
 class SimplexNoise
 {
 public:
-    // 1D simplex noise
+    // 1D Perlin simplex noise
     static float noise(float x);
 };
