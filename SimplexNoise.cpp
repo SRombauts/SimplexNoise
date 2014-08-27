@@ -248,5 +248,5 @@ float SimplexNoise::noise(float x, float y)
 
     // Add contributions from each corner to get the final noise value.
     // The result is scaled to return values in the interval [-1,1].
-    return 40.0f * (n0 + n1 + n2); // TODO: The scale factor is preliminary!
+    return 45.23065f * (n0 + n1 + n2);
 }
