@@ -13,7 +13,8 @@ Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D)
   and switches to using predefined gradients of unit lenght to the middle of each edges. 
   [Ken Perlin original references](http://mrl.nyu.edu/~perlin/paper445.pdf)
 - Perlin's "Simplex" Noise (2001) rather than placing each input point into a cubic grid,
-  based on the integer parts of its (x,y,z) coordinate values, placed them onto a simplicial grid  (think triangles instead of squares, pyramids instead of cubes...)
+  based on the integer parts of its (x,y,z) coordinate values, placed them onto a simplicial grid
+  (think triangles instead of squares, pyramids instead of cubes...)
   [Ken Perlin original references](http://www.csee.umbc.edu/~olano/s2002c36/ch02.pdf)
 
 ## Code attribution
@@ -30,7 +31,7 @@ Stefan Gustavson, Linköping University, Sweden (stegu@itn.liu.se), 2005-03-22
 
 ## License
 
-Copyright (c) 2014 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+Copyright (c) 2014-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 or copy at http://opensource.org/licenses/MIT)

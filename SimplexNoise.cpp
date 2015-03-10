@@ -2,7 +2,7 @@
  * @file    SimplexNoise.cpp
  * @brief   A Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D).
  *
- * Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2014-2015 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * This C++ implementation is based on the speed-improved Java version 2012-03-09
  * by Stefan Gustavson (original Java source code in the public domain).
@@ -100,11 +100,21 @@ static inline uint8_t hash(uint8_t i)
  * Note also that these noise functions are the most practical and useful
  * signed version of Perlin noise.
  */
+static const float gradients1D[16] =
+{
+    -8.f, -7.f, -6.f, -5.f, -4.f, -3.f, -2.f, -1.f,
+     1.f,  2.f,  3.f,  4.f,  5.f,  6.f,  7.f,  8.f
+};
+
 float grad(int32_t hash, float x)
 {
+/*
     int32_t h = hash & 15;
     float grad = 1.0f + (h & 7);    // Gradient value 1.0, 2.0, ..., 8.0
     if ((h & 8) != 0) grad = -grad; // Set a random sign for the gradient
+*/
+    int32_t h = hash & 0x0F;
+    float grad = gradients1D[h];
     return (grad * x);              // Multiply the gradient with the distance
 }
 // TODO SRombauts : replace with unit Gradient tables (for speed)
