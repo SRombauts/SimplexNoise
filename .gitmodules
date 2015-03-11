@@ -1,0 +1,3 @@
+[submodule "cpplint"]
+	path = cpplint
+	url = https://github.com/SRombauts/cpplint.git

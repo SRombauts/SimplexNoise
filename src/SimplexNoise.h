@@ -12,9 +12,9 @@
 #include <cstdint>
 
 /**
-*/
-class SimplexNoise
-{
+ * @brief A Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D).
+ */
+class SimplexNoise {
 public:
     // 1D Perlin simplex noise
     static float noise(float x);

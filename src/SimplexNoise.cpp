@@ -34,8 +34,7 @@
  *  double: ~20.6ns instead of ~36.6ns on an AMD APU),
  * Reference: http://www.codeproject.com/Tips/700780/Fast-floor-ceiling-functions
  */
-static inline int32_t fastfloor(const float fp)
-{
+static inline int32_t fastfloor(const float fp) {
     int i = (int32_t)fp;
     return (fp < i) ? (i - 1) : (i);
 }
@@ -61,8 +60,7 @@ static inline int32_t fastfloor(const float fp)
  * A vector-valued noise over 3D accesses it 96 times, and a
  * float-valued 4D noise 64 times. We want this to fit in the cache!
  */
-static const uint8_t perm[256] =
-{
+static const uint8_t perm[256] = {
     151, 160, 137, 91, 90, 15,
     131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23,
     190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33,
@@ -86,8 +84,7 @@ static const uint8_t perm[256] =
  *  Using a real hash function would be better to improve the "repeatability of 256" of the above permutation table,
  * but fast integer Hash functions uses more time and have bad random properties.
  */
-static inline uint8_t hash(uint8_t i)
-{
+static inline uint8_t hash(uint8_t i) {
     return perm[i];
 }
 
@@ -100,14 +97,12 @@ static inline uint8_t hash(uint8_t i)
  * Note also that these noise functions are the most practical and useful
  * signed version of Perlin noise.
  */
-static const float gradients1D[16] =
-{
+static const float gradients1D[16] = {
     -8.f, -7.f, -6.f, -5.f, -4.f, -3.f, -2.f, -1.f,
      1.f,  2.f,  3.f,  4.f,  5.f,  6.f,  7.f,  8.f
 };
 
-float grad(int32_t hash, float x)
-{
+float grad(int32_t hash, float x) {
 /*
     int32_t h = hash & 15;
     float grad = 1.0f + (h & 7);    // Gradient value 1.0, 2.0, ..., 8.0
@@ -117,11 +112,12 @@ float grad(int32_t hash, float x)
     float grad = gradients1D[h];
     return (grad * x);              // Multiply the gradient with the distance
 }
-// TODO SRombauts : replace with unit Gradient tables (for speed)
+
+// TODO(SRombauts): replace with unit Gradient tables (for speed)
 float grad(int hash, float x, float y) {
     int h = hash & 7;       // Convert low 3 bits of hash code
-    float u = h<4 ? x : y;  // into 8 simple gradient directions,
-    float v = h<4 ? y : x;  // and compute the dot product with (x,y).
+    float u = h < 4 ? x : y;  // into 8 simple gradient directions,
+    float v = h < 4 ? y : x;  // and compute the dot product with (x,y).
     return ((h & 1) ? -u : u) + ((h & 2) ? -2.0f*v : 2.0f*v);
 }
 
@@ -129,15 +125,14 @@ float grad(int hash, float x, float y) {
 /**
  * 1D Perlin simplex noise
  *
- *  Takes arround 74ns on an AMD APU.
+ *  Takes around 74ns on an AMD APU.
  *
  * @param[in] x float coordinate
  *
  * @return Noise value in the range[-1; 1], value of 0 on all integer coordinates.
  */
-float SimplexNoise::noise(float x)
-{
-    float n0, n1; // Noise contributions from the two "corners"
+float SimplexNoise::noise(float x) {
+    float n0, n1;   // Noise contributions from the two "corners"
 
     // No need to skew the input space in 1D
 
@@ -168,45 +163,41 @@ float SimplexNoise::noise(float x)
 /**
  * 2D Perlin simplex noise
  *
- *  Takes arround 150ns on an AMD APU.
+ *  Takes around 150ns on an AMD APU.
  *
  * @param[in] x float coordinate
  * @param[in] y float coordinate
  *
  * @return Noise value in the range[-1; 1], value of 0 on all integer coordinates.
  */
-float SimplexNoise::noise(float x, float y)
-{
-    float n0, n1, n2; // Noise contributions from the three corners
+float SimplexNoise::noise(float x, float y) {
+    float n0, n1, n2;   // Noise contributions from the three corners
 
     // Skewing/Unskewing factors for 2D
-    const float F2 = 0.366025403f;  // F2 = 0.5*(sqrt(3.0)-1.0)
-    const float G2 = 0.211324865f;  // G2 = (3.0-sqrt(3.0))/6.0
+    const float F2 = 0.366025403f;  // F2 = (sqrt(3) - 1) / 2
+    const float G2 = 0.211324865f;  // G2 = (3 - sqrt(3)) / 6   = F2 / (1 + 2 * K)
 
     // Skew the input space to determine which simplex cell we're in
-    float s = (x + y) * F2; // Hairy factor for 2D
+    float s = (x + y) * F2;  // Hairy factor for 2D
     float xs = x + s;
     float ys = y + s;
     int32_t i = fastfloor(xs);
     int32_t j = fastfloor(ys);
 
     // Unskew the cell origin back to (x,y) space
-    float t = (float)(i + j) * G2;
+    float t = static_cast<float>(i + j) * G2;
     float X0 = i - t;
     float Y0 = j - t;
-    float x0 = x - X0; // The x,y distances from the cell origin
+    float x0 = x - X0;  // The x,y distances from the cell origin
     float y0 = y - Y0;
 
     // For the 2D case, the simplex shape is an equilateral triangle.
     // Determine which simplex we are in.
-    int32_t i1, j1; // Offsets for second (middle) corner of simplex in (i,j) coords
-    if (x0 > y0)
-    {   // lower triangle, XY order: (0,0)->(1,0)->(1,1)
+    int32_t i1, j1;  // Offsets for second (middle) corner of simplex in (i,j) coords
+    if (x0 > y0) {   // lower triangle, XY order: (0,0)->(1,0)->(1,1)
         i1 = 1;
         j1 = 0;
-    }
-    else
-    {   // upper triangle, YX order: (0,0)->(0,1)->(1,1)
+    } else {   // upper triangle, YX order: (0,0)->(0,1)->(1,1)
         i1 = 0;
         j1 = 1;
     }
@@ -215,43 +206,34 @@ float SimplexNoise::noise(float x, float y)
     // a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
     // c = (3-sqrt(3))/6
 
-    float x1 = x0 - i1 + G2; // Offsets for middle corner in (x,y) unskewed coords
+    float x1 = x0 - i1 + G2;            // Offsets for middle corner in (x,y) unskewed coords
     float y1 = y0 - j1 + G2;
-    float x2 = x0 - 1.0f + 2.0f * G2; // Offsets for last corner in (x,y) unskewed coords
+    float x2 = x0 - 1.0f + 2.0f * G2;   // Offsets for last corner in (x,y) unskewed coords
     float y2 = y0 - 1.0f + 2.0f * G2;
 
     // Calculate the contribution from the first corner
     float t0 = 0.5f - x0*x0 - y0*y0;
-    if (t0 < 0.0f)
-    {
+    if (t0 < 0.0f) {
         n0 = 0.0f;
-    }
-    else
-    {
+    } else {
         t0 *= t0;
         n0 = t0 * t0 * grad(hash(i + hash(j)), x0, y0);
     }
 
     // Calculate the contribution from the second corner
     float t1 = 0.5f - x1*x1 - y1*y1;
-    if (t1 < 0.0f)
-    {
+    if (t1 < 0.0f) {
         n1 = 0.0f;
-    }
-    else
-    {
+    } else {
         t1 *= t1;
         n1 = t1 * t1 * grad(hash(i + i1 + hash(j + j1)), x1, y1);
     }
 
     // Calculate the contribution from the third corner
     float t2 = 0.5f - x2*x2 - y2*y2;
-    if (t2 < 0.0f)
-    {
+    if (t2 < 0.0f) {
         n2 = 0.0f;
-    }
-    else
-    {
+    } else {
         t2 *= t2;
         n2 = t2 * t2 * grad(hash(i + 1 + hash(j + 1)), x2, y2);
     }

@@ -1,0 +1,24 @@
+# Copyright (c) 2014-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+
+# build format
+version: "{build}"
+
+# scripts that run after cloning repository
+install:
+  - git submodule update --init --recursive
+
+# configurations to add to build matrix
+configuration:
+  - Debug
+  - Release
+ 
+# scripts to run before build
+before_build:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+# build
+build_script:
+  - cmake --build .
+  - ctest .

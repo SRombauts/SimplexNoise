@@ -1,6 +1,9 @@
 Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D)
 ========================================================
 
+[![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/SimplexNoise.svg)](https://travis-ci.org/SRombauts/SimplexNoise "Travis CI Linux Build Status")
+[![AppVeyor Windows Build status](https://ci.appveyor.com/api/projects/status/github/SRombauts/SimplexNoise?svg=true)](https://ci.appveyor.com/project/SbastienRombauts/SimplexNoise "AppVeyor Windows Build status")
+
 ## About Perlin's "Simplex" Noise
 - Perlin's "Classic" Noise (1984) is an algorithm producing pseudo-random fluctuations
   simulating natural looking variations, producing paterns all of the same size.
@@ -27,20 +30,34 @@ http://webstaff.itn.liu.se/~stegu/simplexnoise/SimplexNoise.java:
 - Better rank ordering method by Stefan Gustavson in 2012.
 
 [Simplex noise demystified](http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf),
-Stefan Gustavson, Link�ping University, Sweden (stegu@itn.liu.se), 2005-03-22
+Stefan Gustavson, Linköping University, Sweden (stegu@itn.liu.se), 2005-03-22
 
 ## License
 
-Copyright (c) 2014-2015 S�bastien Rombauts (sebastien.rombauts@gmail.com)
+Copyright (c) 2014-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 or copy at http://opensource.org/licenses/MIT)
+
+## Current Status
+### Features
+- 
+
+### Wishlist
+- Add a simple CMake project to test compilation
+- cpplint to check code style
+- cppchek to check code sanity
+- Doxygen to generate code documentaion
+- Add Travis & AppVeyor Continous Intergration config files
+
+- Add a parameter for permutation (offset and mask?) of the random table (could be way better than simple offseting applied by the user application)
+- Implement 3D & 4D algorithms
 
 ## How to contribute
 ### GitHub website
 The most efficient way to help and contribute to this wrapper project is to
 use the tools provided by GitHub:
-- please fill bug reports and feature requests here: https://github.com/SRombauts/SQLiteCpp/issues
+- please fill bug reports and feature requests here: https://github.com/SRombauts/SimplexNoise/issues
 - fork the repository, make some small changes and submit them with pull-request
 
 ### Contact
@@ -48,3 +65,15 @@ You can also email me directly, I will answer any questions and requests.
 
 ## See Also
 [SRombauts GitHub website](http://srombauts.github.com)
+
+### Continuous Integration
+
+This project is continuously tested under Ubuntu Linux with the gcc and clang compilers
+using the Travis CI community service with the above CMake building and testing procedure.
+It is also tested in the same way under Windows Server 2012 R2 with Visual Studio 2013 compiler
+using the AppVeyor countinuous integration service.
+
+Detailed results can be seen online:
+ - https://travis-ci.org/SRombauts/SimplexNoise
+ - https://ci.appveyor.com/project/SbastienRombauts/SimplexNoise
+
