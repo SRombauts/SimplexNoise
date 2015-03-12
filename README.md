@@ -41,17 +41,14 @@ or copy at http://opensource.org/licenses/MIT)
 
 ## Current Status
 ### Features
-- 
+- 1D and 2D Perlin Simplex Noise algorithms
+
+- CMake project with, cpplint to check code style, cppchek to check code sanity, Doxygen to generate code documentaion
 
 ### Wishlist
-- Add a simple CMake project to test compilation
-- cpplint to check code style
-- cppchek to check code sanity
-- Doxygen to generate code documentaion
-- Add Travis & AppVeyor Continous Intergration config files
-
+- Add a standard Fractal summation of multiple octaves of noise
+- Implement 3D and 4D Perlin Simplex Noise algorithms
 - Add a parameter for permutation (offset and mask?) of the random table (could be way better than simple offseting applied by the user application)
-- Implement 3D & 4D algorithms
 
 ## How to contribute
 ### GitHub website
