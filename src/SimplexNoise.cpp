@@ -242,3 +242,49 @@ float SimplexNoise::noise(float x, float y) {
     // The result is scaled to return values in the interval [-1,1].
     return 45.23065f * (n0 + n1 + n2);
 }
+
+
+/**
+ * Fractal/Fractional Brownian Motion (fBm) summation of 1D Perlin Simplex noise
+ *
+ * @param[in] x float coordinate
+ *
+ * @return Noise value in the range[-1; 1], value of 0 on all integer coordinates.
+ */
+float SimplexNoise::fractal(int octaves, float x) const {
+    float output    = 0.f;
+    float frequency = mFrequency;
+    float amplitude = mAmplitude;
+
+    for (int i = 0; i < octaves; i++) {
+        output += (amplitude * noise(x * frequency));
+
+        frequency *= mLacunarity;
+        amplitude *= mPersistence;
+    }
+
+    return output;
+}
+
+/**
+ * Fractal/Fractional Brownian Motion (fBm) summation of 2D Perlin Simplex noise
+ *
+ * @param[in] x float coordinate
+ * @param[in] y float coordinate
+ *
+ * @return Noise value in the range[-1; 1], value of 0 on all integer coordinates.
+ */
+float SimplexNoise::fractal(int octaves, float x, float y) const {
+    float output = 0.f;
+    float frequency = mFrequency;
+    float amplitude = mAmplitude;
+
+    for (int i = 0; i < octaves; i++) {
+        output += (amplitude * noise(x * frequency, y * frequency));
+
+        frequency *= mLacunarity;
+        amplitude *= mPersistence;
+    }
+
+    return output;
+}

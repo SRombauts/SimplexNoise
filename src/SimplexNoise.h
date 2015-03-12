@@ -20,4 +20,23 @@ public:
     static float noise(float x);
     // 2D Perlin simplex noise
     static float noise(float x, float y);
+
+    // Fractal/Fractional Brownian Motion (fBm) noise summation
+    float fractal(int octaves, float x) const;
+    float fractal(int octaves, float x, float y) const;
+
+    // Constructor of to initialize a fractal noise summation
+    explicit SimplexNoise(float frequency = 1.0f, float amplitude = 1.0f, float lacunarity = 2.0f, float persistence = 0.5f) :
+        mFrequency(frequency),
+        mAmplitude(amplitude),
+        mLacunarity(lacunarity),
+        mPersistence(persistence) {
+    }
+
+private:
+    // Parameters of Fractional Brownian Motion (fBm) : sum of N "octaves" of noise
+    float mFrequency;   ///< Frequency ("witdh") of the first octave of noise (default to 1.0)
+    float mAmplitude;   ///< Amplitude ("height") of the first octave of noise (default to 1.0)
+    float mLacunarity;  ///< Lacunarity specifies the frequency multipler between successive octaves (default to 2.0).
+    float mPersistence; ///< Persistence is the loss of amplitude between successive octabes (usually 1/lacunarity)
 };

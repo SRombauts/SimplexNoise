@@ -5,6 +5,7 @@ Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D)
 [![AppVeyor Windows Build status](https://ci.appveyor.com/api/projects/status/github/SRombauts/SimplexNoise?svg=true)](https://ci.appveyor.com/project/SbastienRombauts/SimplexNoise "AppVeyor Windows Build status")
 
 ## About Perlin's "Simplex" Noise
+
 - Perlin's "Classic" Noise (1984) is an algorithm producing pseudo-random fluctuations
   simulating natural looking variations, producing paterns all of the same size.
   It is a kind of gradiant-noise algorithm, invented by Ken Perlin while working
@@ -19,6 +20,23 @@ Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D)
   based on the integer parts of its (x,y,z) coordinate values, placed them onto a simplicial grid
   (think triangles instead of squares, pyramids instead of cubes...)
   [Ken Perlin original references](http://www.csee.umbc.edu/~olano/s2002c36/ch02.pdf)
+
+## Coherent noise
+
+A coherent noise is a type of smooth pseudorandom noise with following properties:.
+- same input will always return the same output.
+- small change of the input will produce small change of the output.
+- large change of the input will produce random change of the output.
+
+## Fractal noise / Fractional Brownian Motion
+
+Fractional Brownian Motion (fBm) is the summation of successive octaves of coherent noise,
+each with higher frequency and lower amplitude.
+
+- Frequency of an octave of noise is the "width" of the pattern
+- Amplitude of an octave of noise it the "height" of its feature
+- Lacunarity specifies the frequency multipler between successive octaves (typically 2.0).
+- Persistence is the loss of amplitude between successive octabes (usually 1/lacunarity).
 
 ## Code attribution
 
