@@ -26,16 +26,24 @@
 
 #include "SimplexNoise.h"
 
+#include <cstdint>  // int32_t/uint8_t
+
 /**
+ * Computes the largest integer value not greater than the float one
+ *
  * This method is faster than using (int32_t)std::floor(fp).
  *
  * I measured it to be approximately twice as fast:
  *  float:  ~18.4ns instead of ~39.6ns on an AMD APU),
  *  double: ~20.6ns instead of ~36.6ns on an AMD APU),
  * Reference: http://www.codeproject.com/Tips/700780/Fast-floor-ceiling-functions
+ *
+ * @param[in] fp    float input value
+ *
+ * @return largest integer value not greater than fp
  */
-static inline int32_t fastfloor(const float fp) {
-    int i = (int32_t)fp;
+static inline int32_t fastfloor(float fp) {
+    int32_t i = (int32_t)fp;
     return (fp < i) ? (i - 1) : (i);
 }
 
@@ -50,7 +58,7 @@ static inline int32_t fastfloor(const float fp) {
  * so it's easiest to just keep it as static explicit data.
  * This also removes the need for any initialisation of this class.
  *
- * Note that making this an int[] instead of a char[] might make the
+ * Note that making this an uint32_t[] instead of a uint8_t[] might make the
  * code run faster on platforms with a high penalty for unaligned single
  * byte addressing. Intel x86 is generally single-byte-friendly, but
  * some other CPUs are faster with 4-aligned reads.
@@ -83,39 +91,56 @@ static const uint8_t perm[256] = {
  *
  *  Using a real hash function would be better to improve the "repeatability of 256" of the above permutation table,
  * but fast integer Hash functions uses more time and have bad random properties.
+ *
+ * @param[in] i Integer value to hash
+ *
+ * @return 8-bits hashed value
  */
-static inline uint8_t hash(uint8_t i) {
-    return perm[i];
+static inline uint8_t hash(int32_t i) {
+    return perm[static_cast<uint8_t>(i)];
 }
 
+/* NOTE Gradient table to test if lookup-table are more efficient than calculs
+static const float gradients1D[16] = {
+        -8.f, -7.f, -6.f, -5.f, -4.f, -3.f, -2.f, -1.f,
+         1.f,  2.f,  3.f,  4.f,  5.f,  6.f,  7.f,  8.f
+};
+*/
+
 /**
- * Helper functions to compute gradients-dot-residual vectors (1D to 4D)
- * Note that these generate gradients of more than unit length. To make
+ * Helper function to compute gradients-dot-residual vectors (1D)
+ *
+ * @note that these generate gradients of more than unit length. To make
  * a close match with the value range of classic Perlin noise, the final
  * noise values need to be rescaled to fit nicely within [-1,1].
  * (The simplex noise functions as such also have different scaling.)
  * Note also that these noise functions are the most practical and useful
  * signed version of Perlin noise.
+ *
+ * @param[in] hash  hash value
+ * @param[in] x     distance to the corner
+ *
+ * @return gradient value
  */
-static const float gradients1D[16] = {
-    -8.f, -7.f, -6.f, -5.f, -4.f, -3.f, -2.f, -1.f,
-     1.f,  2.f,  3.f,  4.f,  5.f,  6.f,  7.f,  8.f
-};
-
-float grad(int32_t hash, float x) {
-/*
-    int32_t h = hash & 15;
+static float grad(int32_t hash, float x) {
+    int32_t h = hash & 0x0F;        // Convert low 4 bits of hash code
     float grad = 1.0f + (h & 7);    // Gradient value 1.0, 2.0, ..., 8.0
     if ((h & 8) != 0) grad = -grad; // Set a random sign for the gradient
-*/
-    int32_t h = hash & 0x0F;
-    float grad = gradients1D[h];
+//  float grad = gradients1D[h];    // NOTE : Test of Gradient look-up table instead of the above
     return (grad * x);              // Multiply the gradient with the distance
 }
 
-// TODO(SRombauts): replace with unit Gradient tables (for speed)
-float grad(int hash, float x, float y) {
-    int h = hash & 7;       // Convert low 3 bits of hash code
+/**
+ * Helper functions to compute gradients-dot-residual vectors (2D)
+ *
+ * @param[in] hash  hash value
+ * @param[in] x     x coord of the distance to the corner
+ * @param[in] y     y coord of the distance to the corner
+ *
+ * @return gradient value
+ */
+static float grad(int32_t hash, float x, float y) {
+    int32_t h = hash & 0x3F;  // Convert low 3 bits of hash code
     float u = h < 4 ? x : y;  // into 8 simple gradient directions,
     float v = h < 4 ? y : x;  // and compute the dot product with (x,y).
     return ((h & 1) ? -u : u) + ((h & 2) ? -2.0f*v : 2.0f*v);
@@ -247,16 +272,17 @@ float SimplexNoise::noise(float x, float y) {
 /**
  * Fractal/Fractional Brownian Motion (fBm) summation of 1D Perlin Simplex noise
  *
- * @param[in] x float coordinate
+ * @param[in] octaves   number of fraction of noise to sum
+ * @param[in] x         float coordinate
  *
  * @return Noise value in the range[-1; 1], value of 0 on all integer coordinates.
  */
-float SimplexNoise::fractal(int octaves, float x) const {
+float SimplexNoise::fractal(size_t octaves, float x) const {
     float output    = 0.f;
     float frequency = mFrequency;
     float amplitude = mAmplitude;
 
-    for (int i = 0; i < octaves; i++) {
+    for (size_t i = 0; i < octaves; i++) {
         output += (amplitude * noise(x * frequency));
 
         frequency *= mLacunarity;
@@ -269,17 +295,18 @@ float SimplexNoise::fractal(int octaves, float x) const {
 /**
  * Fractal/Fractional Brownian Motion (fBm) summation of 2D Perlin Simplex noise
  *
- * @param[in] x float coordinate
- * @param[in] y float coordinate
+ * @param[in] octaves   number of fraction of noise to sum
+ * @param[in] x         x float coordinate
+ * @param[in] y         y float coordinate
  *
  * @return Noise value in the range[-1; 1], value of 0 on all integer coordinates.
  */
-float SimplexNoise::fractal(int octaves, float x, float y) const {
+float SimplexNoise::fractal(size_t octaves, float x, float y) const {
     float output = 0.f;
     float frequency = mFrequency;
     float amplitude = mAmplitude;
 
-    for (int i = 0; i < octaves; i++) {
+    for (size_t i = 0; i < octaves; i++) {
         output += (amplitude * noise(x * frequency, y * frequency));
 
         frequency *= mLacunarity;
