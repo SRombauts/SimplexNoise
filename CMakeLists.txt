@@ -54,17 +54,34 @@ set(CPPLINT_ARG_LINELENGTH "--linelength=120")
 set(CPPLINT_ARG_VERBOSE    "--verbose=1")
 
 # List all sources/headers files
-set(all_source_files
+set(source_files
  ${CMAKE_SOURCE_DIR}/src/SimplexNoise.cpp
  ${CMAKE_SOURCE_DIR}/src/SimplexNoise.h
  ${CMAKE_SOURCE_DIR}/test/main.cpp
 )
+source_group(src,     FILES ${source_files})
+
+# List script files
+set(script_files
+ ${CMAKE_SOURCE_DIR}/.travis.yml
+ ${CMAKE_SOURCE_DIR}/appveyor.yml
+ ${CMAKE_SOURCE_DIR}/build.bat
+ ${CMAKE_SOURCE_DIR}/build.sh
+)
+source_group(scripts, FILES ${script_files})
+
+# List doc files
+set(doc_files
+ ${CMAKE_SOURCE_DIR}/README.md
+ ${CMAKE_SOURCE_DIR}/LICENSE.txt
+)
+source_group(doc,     FILES ${doc_files})
 
 # All includes are relative to the "src" directory
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
 # add the application executable
-add_executable(SimplexNoise ${all_source_files})
+add_executable(SimplexNoise ${source_files} ${doc_files} ${script_files})
 target_link_libraries(SimplexNoise ${SYSTEM_LIBRARIES})
 
 
@@ -75,7 +92,7 @@ if (SIMPLEXNOISE_RUN_CPPLINT)
     # add a cpplint target to the "all" target
     add_custom_target(cpplint
      ALL
-     COMMAND python ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${all_source_files}
+     COMMAND python ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${source_files}
     )
 else (SIMPLEXNOISE_RUN_CPPLINT)
     message(STATUS "SIMPLEXNOISE_RUN_CPPLINT OFF")
