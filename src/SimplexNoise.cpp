@@ -279,17 +279,19 @@ float SimplexNoise::noise(float x, float y) {
  */
 float SimplexNoise::fractal(size_t octaves, float x) const {
     float output    = 0.f;
+    float denom     = 0.f;
     float frequency = mFrequency;
     float amplitude = mAmplitude;
 
     for (size_t i = 0; i < octaves; i++) {
         output += (amplitude * noise(x * frequency));
+        denom += amplitude;
 
         frequency *= mLacunarity;
         amplitude *= mPersistence;
     }
 
-    return output;
+    return (output / denom);
 }
 
 /**
@@ -303,15 +305,17 @@ float SimplexNoise::fractal(size_t octaves, float x) const {
  */
 float SimplexNoise::fractal(size_t octaves, float x, float y) const {
     float output = 0.f;
+    float denom  = 0.f;
     float frequency = mFrequency;
     float amplitude = mAmplitude;
 
     for (size_t i = 0; i < octaves; i++) {
         output += (amplitude * noise(x * frequency, y * frequency));
+        denom += amplitude;
 
         frequency *= mLacunarity;
         amplitude *= mPersistence;
     }
 
-    return output;
+    return (output / denom);
 }
