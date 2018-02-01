@@ -1,4 +1,4 @@
-Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D)
+Perlin Simplex Noise C++ Implementation (1D, 2D)
 ========================================================
 
 [![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/SimplexNoise.svg)](https://travis-ci.org/SRombauts/SimplexNoise "Travis CI Linux Build Status")
@@ -14,7 +14,7 @@ Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D)
   [Ken Perlin original references](http://mrl.nyu.edu/~perlin/doc/oscar.html)
 - Perlin's "Improved" Noise (2002) switches to a new interpolation fonction with
   a 2nd derivative zero at t=0 and t=1 to remove artifacts on integer values,
-  and switches to using predefined gradients of unit lenght to the middle of each edges. 
+  and switches to using predefined gradients of unit lenght to the middle of each edges.
   [Ken Perlin original references](http://mrl.nyu.edu/~perlin/paper445.pdf)
 - Perlin's "Simplex" Noise (2001) rather than placing each input point into a cubic grid,
   based on the integer parts of its (x,y,z) coordinate values, placed them onto a simplicial grid
@@ -52,12 +52,12 @@ Stefan Gustavson, Linköping University, Sweden (stegu@itn.liu.se), 2005-03-22
 
 ## License
 
-Copyright (c) 2014-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+Copyright (c) 2014-2018 Sebastien Rombauts (sebastien.rombauts@gmail.com)
 
 Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 or copy at http://opensource.org/licenses/MIT)
 
-## Current Status
+## Current Status
 ### Features
 - 1D and 2D Perlin Simplex Noise algorithms
 
@@ -81,7 +81,7 @@ You can also email me directly, I will answer any questions and requests.
 ## See Also
 [SRombauts GitHub website](http://srombauts.github.com)
 
-### Continuous Integration
+### Continuous Integration
 
 This project is continuously tested under Ubuntu Linux with the gcc and clang compilers
 using the Travis CI community service with the above CMake building and testing procedure.

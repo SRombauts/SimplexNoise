@@ -1,8 +1,8 @@
 /**
  * @file    SimplexNoise.cpp
- * @brief   A Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D).
+ * @brief   A Perlin Simplex Noise C++ Implementation (1D, 2D).
  *
- * Copyright (c) 2014-2015 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2014-2018 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * This C++ implementation is based on the speed-improved Java version 2012-03-09
  * by Stefan Gustavson (original Java source code in the public domain).
@@ -43,7 +43,7 @@
  * @return largest integer value not greater than fp
  */
 static inline int32_t fastfloor(float fp) {
-    int32_t i = (int32_t)fp;
+    int32_t i = static_cast<int32_t>(fp);
     return (fp < i) ? (i - 1) : (i);
 }
 
