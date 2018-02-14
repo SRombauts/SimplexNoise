@@ -1,6 +1,6 @@
 /**
  * @file    SimplexNoise.h
- * @brief   A Perlin Simplex Noise C++ Implementation (1D, 2D).
+ * @brief   A Perlin Simplex Noise C++ Implementation (1D, 2D, 3D).
  *
  * Copyright (c) 2014-2018 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
@@ -20,10 +20,13 @@ public:
     static float noise(float x);
     // 2D Perlin simplex noise
     static float noise(float x, float y);
+    // 3D Perlin simplex noise
+    static float noise(float x, float y, float z);
 
     // Fractal/Fractional Brownian Motion (fBm) noise summation
     float fractal(size_t octaves, float x) const;
     float fractal(size_t octaves, float x, float y) const;
+    float fractal(size_t octaves, float x, float y, float z) const;
 
     /**
      * Constructor of to initialize a fractal noise summation

@@ -1,4 +1,4 @@
-Perlin Simplex Noise C++ Implementation (1D, 2D)
+Perlin Simplex Noise C++ Implementation (1D, 2D, 3D)
 ========================================================
 
 [![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/SimplexNoise.svg)](https://travis-ci.org/SRombauts/SimplexNoise "Travis CI Linux Build Status")
@@ -59,13 +59,12 @@ or copy at http://opensource.org/licenses/MIT)
 
 ## Current Status
 ### Features
-- 1D and 2D Perlin Simplex Noise algorithms
-
+- 1D, 2D and 3D Perlin Simplex Noise algorithms
 - CMake project with, cpplint to check code style, cppchek to check code sanity, Doxygen to generate code documentaion
 
 ### Wishlist
 - Add a standard Fractal summation of multiple octaves of noise
-- Implement 3D and 4D Perlin Simplex Noise algorithms
+- Implement 4D Perlin Simplex Noise algorithms
 - Add a parameter for permutation (offset and mask?) of the random table (could be way better than simple offseting applied by the user application)
 
 ## How to contribute
