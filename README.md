@@ -60,10 +60,10 @@ or copy at http://opensource.org/licenses/MIT)
 ## Current Status
 ### Features
 - 1D, 2D and 3D Perlin Simplex Noise algorithms
+- standard Fractal/Fractional Brownian Motion (fBm) noise summation of multiple octaves
 - CMake project with, cpplint to check code style, cppchek to check code sanity, Doxygen to generate code documentaion
 
 ### Wishlist
-- Add a standard Fractal summation of multiple octaves of noise
 - Implement 4D Perlin Simplex Noise algorithms
 - Add a parameter for permutation (offset and mask?) of the random table (could be way better than simple offseting applied by the user application)
 
@@ -75,7 +75,7 @@ use the tools provided by GitHub:
 - fork the repository, make some small changes and submit them with pull-request
 
 ### Contact
-You can also email me directly, I will answer any questions and requests.
+You can also email me directly.
 
 ## See Also
 [SRombauts GitHub website](http://srombauts.github.com)
