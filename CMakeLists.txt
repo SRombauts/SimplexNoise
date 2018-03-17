@@ -26,8 +26,9 @@ else (MSVC)
     set(CPPLINT_ARG_OUTPUT      "--output=eclipse")
     set(CPPCHECK_ARG_TEMPLATE   "--template=gcc")
     set(DEV_NULL                "/dev/null")
-    set(SYSTEM_LIBRARIES        "rt")
-
+    if (NOT APPLE)
+        set(SYSTEM_LIBRARIES        "rt")
+    endif (NOT APPLE)
     # C++11 :
     add_definitions(-std=c++0x) # equivalent to "-std=c++11" but backward compatible for GCC 4.6 on Travic-CI
     # Stack protection
