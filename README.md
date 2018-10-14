@@ -38,6 +38,9 @@ each with higher frequency and lower amplitude.
 - Lacunarity specifies the frequency multipler between successive octaves (typically 2.0).
 - Persistence is the loss of amplitude between successive octabes (usually 1/lacunarity).
 
+2D image of fractal noise with 7 octaves of 2D Simplex Noise (from [SimplexNoiseCImg example project](https://raw.githubusercontent.com/SRombauts/SimplexNoiseCImg)):
+![1 octave of 2D Simplex Noise](Screenshots/Simplex2D-7octaves.png)
+
 ## Code attribution
 
 This C++ implementation is based on the speed-improved Java version 2012-03-09
