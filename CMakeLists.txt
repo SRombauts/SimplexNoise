@@ -56,25 +56,25 @@ set(CPPLINT_ARG_VERBOSE    "--verbose=1")
 
 # List all sources/headers files
 set(source_files
- ${CMAKE_SOURCE_DIR}/src/SimplexNoise.cpp
- ${CMAKE_SOURCE_DIR}/src/SimplexNoise.h
- ${CMAKE_SOURCE_DIR}/test/main.cpp
+ ${PROJECT_SOURCE_DIR}/src/SimplexNoise.cpp
+ ${PROJECT_SOURCE_DIR}/src/SimplexNoise.h
+ ${PROJECT_SOURCE_DIR}/test/main.cpp
 )
 source_group(src,     FILES ${source_files})
 
 # List script files
 set(script_files
- ${CMAKE_SOURCE_DIR}/.travis.yml
- ${CMAKE_SOURCE_DIR}/appveyor.yml
- ${CMAKE_SOURCE_DIR}/build.bat
- ${CMAKE_SOURCE_DIR}/build.sh
+ ${PROJECT_SOURCE_DIR}/.travis.yml
+ ${PROJECT_SOURCE_DIR}/appveyor.yml
+ ${PROJECT_SOURCE_DIR}/build.bat
+ ${PROJECT_SOURCE_DIR}/build.sh
 )
 source_group(scripts, FILES ${script_files})
 
 # List doc files
 set(doc_files
- ${CMAKE_SOURCE_DIR}/README.md
- ${CMAKE_SOURCE_DIR}/LICENSE.txt
+ ${PROJECT_SOURCE_DIR}/README.md
+ ${PROJECT_SOURCE_DIR}/LICENSE.txt
 )
 source_group(doc,     FILES ${doc_files})
 
