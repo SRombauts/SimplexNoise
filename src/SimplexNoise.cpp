@@ -23,7 +23,6 @@
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
  */
-// Minor changes from Aaron Kriegman
 
 #include "SimplexNoise.h"
 

@@ -7,7 +7,7 @@
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
  */
-// Minor changes from Aaron Kriegman
+
 #pragma once
 
 #include <cstddef>  // size_t
