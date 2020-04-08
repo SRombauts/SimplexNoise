@@ -11,7 +11,7 @@
 
 int main() {
     float x     = 0.123f;                   // Define a float coordinate
-    float noise = SimplexNoise::noise(x);   // Get the noise value for the coordinate
+		float noise = SimplexNoise().noise(x);   // Get the noise value for the coordinate
     (void)noise;
 
     return 0;
