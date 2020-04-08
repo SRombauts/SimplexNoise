@@ -26,8 +26,6 @@
 
 #include "SimplexNoise.h"
 
-#include <cstdint>  // int32_t/uint8_t
-
 /**
  * Computes the largest integer value not greater than the float one
  *
@@ -100,8 +98,8 @@ static inline uint8_t hash(int32_t i) {
     return perm[static_cast<uint8_t>(i)] ^ perm[static_cast<uint8_t>(i >> 8)];
 }
 
-static inline uint8_t hash(int32_t i, uint8_t seed) {
-    return perm[static_cast<uint8_t>(i)] ^ perm[static_cast<uint8_t>(i >> 8)] ^ seed;
+static inline uint8_t hash(int32_t i, uint32_t seed) {
+    return perm[static_cast<uint8_t>(i)] ^ perm[static_cast<uint8_t>(i >> 8)] ^ static_cast<uint8_t>(seed);
 }
 
 /* NOTE Gradient table to test if lookup-table are more efficient than calculs

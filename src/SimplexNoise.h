@@ -7,9 +7,9 @@
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
  */
-
 #pragma once
 
+#include <cstdint>  // int32_t/uint8_t
 #include <cstddef>  // size_t
 
 /**
@@ -37,7 +37,7 @@ public:
      * @param[in] lacunarity   Lacunarity specifies the frequency multiplier between successive octaves (default to 2.0).
      * @param[in] persistence  Persistence is the loss of amplitude between successive octaves (usually 1/lacunarity)
      */
-    explicit SimplexNoise(unsigned int seed = 0,
+    explicit SimplexNoise(uint32_t seed = 0,
                           float frequency = 1.0f,
                           float amplitude = 1.0f,
                           float lacunarity = 2.0f,
@@ -51,7 +51,7 @@ public:
 
 private:
     // Parameters of Fractional Brownian Motion (fBm) : sum of N "octaves" of noise
-    unsigned int mSeed;
+    uint32_t mSeed;
     float mFrequency;   ///< Frequency ("width") of the first octave of noise (default to 1.0)
     float mAmplitude;   ///< Amplitude ("height") of the first octave of noise (default to 1.0)
     float mLacunarity;  ///< Lacunarity specifies the frequency multiplier between successive octaves (default to 2.0).
