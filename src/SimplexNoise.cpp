@@ -100,16 +100,20 @@ static inline uint8_t hash(int32_t i) {
     return perm[static_cast<uint8_t>(i)];
 }
 
-/* NOTE Gradient table to test if lookup-table are more efficient than calculs
+#ifdef GRAD_LUT
+// NOTE Gradient table to test if lookup-table are more efficient than calculs
 static const float gradients1D[16] = {
         -8.f, -7.f, -6.f, -5.f, -4.f, -3.f, -2.f, -1.f,
          1.f,  2.f,  3.f,  4.f,  5.f,  6.f,  7.f,  8.f
 };
-*/
+#endif //GRAD_LUT
 
 /**
  * Helper function to compute gradients-dot-residual vectors (1D)
- *
+ * Use first 4 bits of hash to pick a value [-8,0)(0,8]
+ * bits   purpose
+ * 0-2    value
+ * 3      sign
  * @note that these generate gradients of more than unit length. To make
  * a close match with the value range of classic Perlin noise, the final
  * noise values need to be rescaled to fit nicely within [-1,1].
@@ -123,16 +127,22 @@ static const float gradients1D[16] = {
  * @return gradient value
  */
 static float grad(int32_t hash, float x) {
-    const int32_t h = hash & 0x0F;  // Convert low 4 bits of hash code
-    float grad = 1.0f + (h & 7);    // Gradient value 1.0, 2.0, ..., 8.0
-    if ((h & 8) != 0) grad = -grad; // Set a random sign for the gradient
-//  float grad = gradients1D[h];    // NOTE : Test of Gradient look-up table instead of the above
-    return (grad * x);              // Multiply the gradient with the distance
+#ifdef GRAD_LUT
+    float grad = gradients1D[hash & 0x0F];
+#else //GRAD_LUT -> !GRAD_LUT
+    float grad = 1.0f + (hash & 0x7); // Gradient value 1.0, 2.0, ..., 8.0
+    if ((hash & 8) != 0) grad = -grad; // Set a random sign for the gradient
+#endif //!GRAD_LUT
+    return (grad * x); // Multiply the gradient with the distance
 }
 
 /**
  * Helper functions to compute gradients-dot-residual vectors (2D)
- *
+ * Use first 3 bits of hash to pick 1 of 8 orientations
+ * bits   purpose
+ * 0      which dimension doubled
+ * 1      sign non-doubled
+ * 2      sign doubled
  * @param[in] hash  hash value
  * @param[in] x     x coord of the distance to the corner
  * @param[in] y     y coord of the distance to the corner
@@ -140,14 +150,18 @@ static float grad(int32_t hash, float x) {
  * @return gradient value
  */
 static float grad(int32_t hash, float x, float y) {
-    const int32_t h = hash & 0x3F;  // Convert low 3 bits of hash code
-    const float u = h < 4 ? x : y;  // into 8 simple gradient directions,
-    const float v = h < 4 ? y : x;
-    return ((h & 1) ? -u : u) + ((h & 2) ? -2.0f * v : 2.0f * v); // and compute the dot product with (x,y).
+    const float u = hash & 1 ? x : y;
+    const float v = hash & 1 ? y : x;
+    return ((hash & 2) ? -u : u) + ((hash & 4) ? -2.0f * v : 2.0f * v); // and compute the dot product with (x,y).
 }
 
 /**
  * Helper functions to compute gradients-dot-residual vectors (3D)
+ * Use first 6 bits of hash to pick 1 of 12 orientations
+ * bits   purpose
+ * 0-4    which members used
+ * 5      sign first member
+ * 6      sign second member
  *
  * @param[in] hash  hash value
  * @param[in] x     x coord of the distance to the corner
@@ -157,10 +171,13 @@ static float grad(int32_t hash, float x, float y) {
  * @return gradient value
  */
 static float grad(int32_t hash, float x, float y, float z) {
-    int h = hash & 15;     // Convert low 4 bits of hash code into 12 simple
-    float u = h < 8 ? x : y; // gradient directions, and compute dot product.
-    float v = h < 4 ? y : h == 12 || h == 14 ? x : z; // Fix repeats at h = 12 to 15
-    return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
+    uint8_t h = hash&31;
+    float u;
+    float v;
+         if (h < 11) { u = x; v = y; } //11/32 chance
+    else if (h < 22) { u = x; v = z; } //11/32 chance
+    else             { u = y; v = z; } //10/32 chance [biased against!]
+    return ((h & 32) ? -u : u) + ((h & 64) ? -v : v);
 }
 
 /**
