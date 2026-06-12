@@ -50,7 +50,7 @@ http://webstaff.itn.liu.se/~stegu/simplexnoise/SimplexNoise.java:
 - Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
 - Better rank ordering method by Stefan Gustavson in 2012.
 
-[Simplex noise demystified](http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf),
+[Simplex noise demystified](https://www.researchgate.net/publication/216813608_Simplex_noise_demystified),
 Stefan Gustavson, Linköping University, Sweden (stegu@itn.liu.se), 2005-03-22
 
 ## License
